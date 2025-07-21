@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Perfect Press - Home</title>
+  <style>
+    * { box-sizing: border-box; scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff8e7;
+      margin: 0; padding: 0;
+    }
+    header {
+      background-color: #d63384;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      position: relative;
+    }
+    nav {
+      margin-top: 10px;
+    }
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .cart-icon {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 24px;
+    }
+    .cart-icon img {
+      width: 30px;
+    }
+
+    section {
+      padding: 30px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .item-box {
+      background: #fff;
+      padding: 15px;
+      border-radius: 16px;
+      border: 2px solid #e611a2;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s;
+    }
+
+    .item-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .item-box img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .item-box h3 {
+      margin: 0;
+      font-size: 18px;
+      color: #444;
+    }
+
+    .item-box p {
+      margin: 5px 0;
+    }
+
+    input[type="number"] {
+      width: 60px;
+      padding: 6px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .add-btn {
+      margin-top: 10px;
+      background: #e611a2;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .add-btn:hover {
+      background: #b80d85;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      position: relative;
+      text-align: center;
+    }
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 28px;
+      color: #e611a2;
+      cursor: pointer;
+    }
+
+    .buy-btn, .place-btn {
+      display: block;
+      margin: 15px auto;
+      padding: 10px 24px;
+      background: #e611a2;
+      color: white;
+      font-weight: bold;
+      border-radius: 25px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .buy-btn:hover, .place-btn:hover {
+      background: #b80d85;
+    }
+
+    #addressForm {
+      display: none;
+      text-align: left;
+      margin-top: 20px;
+    }
+
+    #addressForm label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+
+    #addressForm input, #addressForm textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    footer {
+      background: #b80d85;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>𝐇𝐏 𝐈𝐫𝐨𝐧𝐢𝐧𝐠 𝐒𝐞𝐫𝐯𝐢𝐜𝐞</h1>
+    <div class="cart-icon" onclick="showCartAlert()">🛒</div>
+    <nav>
+      <a href="ironhome.html">Home</a>
+      <a href="ironpro.html">Products</a>
+      <a href="IronAbout.html">About</a>
+      <a href="Ironcontact.html">Contact</a>
+    </nav>
+  </header>
+
+  <section>
+    <h2>Dress Items</h2>
+    <div class="container" id="itemContainer"></div>
+  </section>
+
+  <!-- Cart Modal -->
+  <div id="cartModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeCart()">&times;</span>
+      <h3>Your Cart</h3>
+      <div id="cartItems"></div>
+      <p id="cartTotal" style="font-weight: bold; margin-top: 10px;"></p>
+      <button class="buy-btn" onclick="showAddressForm()">Next</button>
+
+      <form id="addressForm">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" required>
+
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" required>
+
+        <label for="address">Home Address</label>
+        <textarea id="address" rows="3" required></textarea>
+
+        <button type="button" class="place-btn" onclick="placeService()">Place Service</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 HP Ironing Service. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const items = [
+      { id: "shirt", name: "Shirt", rate: 15, img: "https://tse1.mm.bing.net/th/id/OIP.2AgJVwFREk6cPm9noVTZTQHaHa?pid=Api&P=0&h=180" },
+      { id: "pant", name: "Pant", rate: 20, img: "https://tse4.mm.bing.net/th/id/OIP.ilB9_z9OLjLZJZ7Mi7WVFgHaHa?pid=Api&P=0&h=180" },
+      { id: "saree", name: "Saree", rate: 30, img: "https://tse4.mm.bing.net/th/id/OIP.iY3jpKnBVlh1IiR53uoHMQAAAA?pid=Api&P=0&h=180" },
+      { id: "kurta", name: "Kurta", rate: 25, img: "https://tse2.mm.bing.net/th/id/OIP.AeelwSe6xy1-ujxy9QwL4wHaLG?pid=Api&P=0&h=180" },
+      { id: "coat", name: "Coat", rate: 35, img: "https://tse2.mm.bing.net/th/id/OIP.AzCMqxABuZ480lCm-uTbFQHaHa?pid=Api&P=0&h=180" },
+      { id: "blouse", name: "Blouse", rate: 12, img: "https://tse4.mm.bing.net/th/id/OIP.FVqdBNHNvd6U7piVPNVELgHaHN?pid=Api&P=0&h=180" },
+      { id: "shorts", name: "Shorts", rate: 10, img: "https://tse3.mm.bing.net/th/id/OIP.t_TFCf_LZO4rpB8FjCcPwQHaE8?pid=Api&P=0&h=180" },
+      { id: "tshirt", name: "T-Shirt", rate: 15, img: "https://tse4.mm.bing.net/th/id/OIP.vimEU2dbjDMVdyo_41glHQHaHk?pid=Api&P=0&h=180" },
+      { id: "scarf", name: "Scarf", rate: 8, img: "https://tse2.mm.bing.net/th/id/OIP.RV371QcSGV_HH6TIvA6jJAHaHa?pid=Api&P=0&h=180" },
+      { id: "jacket", name: "Jacket", rate: 40, img: "https://tse4.mm.bing.net/th/id/OIP.uHbd-4FinhxL1dE04Cg0yQHaHa?pid=Api&P=0&h=180" }
+    ];
+
+    const container = document.getElementById("itemContainer");
+    const cartModal = document.getElementById("cartModal");
+    const cartItemsDiv = document.getElementById("cartItems");
+    const cartTotal = document.getElementById("cartTotal");
+    const addressForm = document.getElementById("addressForm");
+
+    let cart = [];
+
+    items.forEach(item => {
+      const html = `
+        <div class="item-box">
+          <img src="${item.img}" alt="${item.name}">
+          <h3>${item.name}</h3>
+          <p>₹${item.rate} per piece</p>
+          Qty: <input type="number" id="${item.id}-qty" min="1" value="1">
+          <button class="add-btn" onclick="addToCart('${item.id}')">Add to Cart</button>
+        </div>
+      `;
+      container.innerHTML += html;
+    });
+
+    function addToCart(itemId) {
+      const item = items.find(i => i.id === itemId);
+      const qty = parseInt(document.getElementById(itemId + '-qty').value);
+      if (!qty || qty <= 0) return;
+
+      const existing = cart.find(i => i.id === itemId);
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        cart.push({ ...item, qty });
+      }
+      alert(`${item.name} added to cart!`);
+    }
+
+    function showCartAlert() {
+      if (cart.length === 0) {
+        cartItemsDiv.innerHTML = "<p>Your cart is empty.</p>";
+        cartTotal.innerText = "";
+      } else {
+        let total = 0;
+        cartItemsDiv.innerHTML = cart.map(item => {
+          const itemTotal = item.rate * item.qty;
+          total += itemTotal;
+          return `<p>${item.name} x ${item.qty} = ₹${itemTotal}</p>`;
+        }).join("");
+        cartTotal.innerText = `Total: ₹${total}`;
+      }
+
+      addressForm.style.display = "none"; // hide form initially
+      cartModal.style.display = "block";
+    }
+
+    function closeCart() {
+      cartModal.style.display = "none";
+    }
+
+    function showAddressForm() {
+      addressForm.style.display = "block";
+    }
+
+    function placeService() {
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const address = document.getElementById("address").value.trim();
+
+      if (!name || !phone || !address) {
+        alert("Please fill all address details.");
+        return;
+      }
+
+      alert("Thank you! Your service has been placed.");
+      cartModal.style.display = "none";
+      cart = []; // reset cart
+    }
+
+    window.onclick = function(event) {
+      if (event.target == cartModal) {
+        cartModal.style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>
